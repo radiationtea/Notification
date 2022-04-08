@@ -1,73 +1,135 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 3C Notification Server
+Notification Management Server for 3C cert system.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## RESTful API docs
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### Client-side call
 
-## Description
+**GET** `/health`\
+request health check
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+request:
+```
+GET /health
 ```
 
-## Running the app
+response:
+```json
+200 OK
+Content-Type: application/json
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+{
+  "success": true,
+  "data": {
+    "subject": "3C-Notification",
+    "uptime": number, // in ms
+    "messages": {
+      "pending": number, // 전송 대기 중인 메시지 수
+      "processing": number, // 전송 중인 메시지 수 
+      "resolved": number, // 전송 된 메시지 수
+      "failed": number, // 전송 실패한 메시지 수
+      "last_at": number // in ms / 마지막으로 처리된 메시지의 타임스템프
+    },
+    "timestamp": number // in ms
+  }
+}
 ```
 
-## Test
+---
 
-```bash
-# unit tests
-$ npm run test
+**GET** `/messages`\
+list all messages
 
-# e2e tests
-$ npm run test:e2e
+request:
+```
+GET /messages?status=<pending/processing/resolved/failed/all>&type=<submitted/accepted/rejected>&per_pages=<1~100, default: 10>&page=<0~>
+Cookies: SESSION_TOKEN=<admin_token>
 
-# test coverage
-$ npm run test:cov
+ex)
+GET /messages?type=all&per_page=100
+GET /messages?type=pending&per_pages=10&page=2
 ```
 
-## Support
+response:
+```json
+200 OK
+Content-Type: application/json
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+{
+  "success": true,
+  "data": {
+    "messages": [
+      {
+        "id": string, // in UUID
+        "status": "pending/processing/resolved/failed",
+        "type": "submitted/accepted/rejected",
+        "requested_at": number, // in ms
+        "resolved_at": number | null,
+        "errors": string | null,
+        "content": string,
+        "phone_number": string
+      },
+      ...
+    ]
+  }
+}
+```
 
-## Stay in touch
+---
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+**DELETE** `/messages/<messageid>`\
+Undo message send request
 
-Nest is [MIT licensed](LICENSE).
+request:
+```
+DELETE /messages/f4dbe82a-7b26-41ac-864a-fb42e2aea082
+Cookies: SESSION_TOKEN=<admin_token>
+```
+
+response:
+```json
+200 OK
+Content-Type: application/json
+
+{
+  "success": true,
+  "data": {
+    "id": string
+  }
+}
+```
+
+### Server-side call
+
+**POST** `/messages`\
+Request send message
+
+request:
+```
+POST /messages
+Content-Type: application/json
+Authorization: token <server-token>
+
+{
+  "type": "submitted/accepted/rejected",
+  "subcategory": number,
+  "user": string
+}
+```
+
+response:
+```json
+201 Created
+Content-Type: application/json
+
+{
+  "success": true,
+  "data": {
+    "id": string
+  }
+}
+```
+
+
