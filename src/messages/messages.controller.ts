@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Query, Req } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Query, Req } from '@nestjs/common'
 import { IsUUID } from 'class-validator'
 import { Request } from 'express'
 import { ResponseBody } from 'src/interfaces/ResponseBody'
+import { CancelMessageDto } from './dto/CancelMessage.dto'
 import { GetMessageDto } from './dto/GetMessage.dto'
 import { QueryMessagesDto } from './dto/QueryMessages.dto'
 import { Message } from './messages.entity'
@@ -53,6 +54,20 @@ export class MessagesController {
       success: true,
       data: {
         message
+      }
+    }
+  }
+
+  @Delete(':id')
+  async cancelMessage (
+    @Param() params: CancelMessageDto
+  ): Promise<ResponseBody<{id: string}>> {
+    await this.messagesService.cancelMessage(params.id)
+
+    return {
+      success: true,
+      data: {
+        id: params.id
       }
     }
   }
