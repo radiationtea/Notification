@@ -1,6 +1,8 @@
-import { Controller, Get, Query, Req } from '@nestjs/common'
+import { Controller, Get, Param, Query, Req } from '@nestjs/common'
+import { IsUUID } from 'class-validator'
 import { Request } from 'express'
 import { ResponseBody } from 'src/interfaces/ResponseBody'
+import { GetMessageDto } from './dto/GetMessage.dto'
 import { QueryMessagesDto } from './dto/QueryMessages.dto'
 import { Message } from './messages.entity'
 import { MessagesService } from './messages.service'
@@ -15,7 +17,6 @@ export class MessagesController {
 
   @Get()
   async queryMessages (
-    @Req() request: Request,
     @Query() query: QueryMessagesDto
   ): Promise<ResponseBody<{ messages: Message[] }>> {
     const messages = await this.messagesService.queryMessages(
@@ -31,6 +32,27 @@ export class MessagesController {
       success: true,
       data: {
         messages
+      }
+    }
+  }
+
+  @Get(':id')
+  async getMessage (
+    @Param() params: GetMessageDto
+  ): Promise<ResponseBody<{message: Message}>> {
+    const message = await this.messagesService.getMessage(params.id)
+
+    if (!message) {
+      return {
+        success: true,
+        error: `message id ${params.id} not found`
+      }
+    }
+
+    return {
+      success: true,
+      data: {
+        message
       }
     }
   }
