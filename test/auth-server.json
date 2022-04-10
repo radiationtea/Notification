@@ -1,0 +1,8 @@
+{
+  "permissions": {
+        "success": true,
+        "data": {
+          "hasPermission": true
+        }
+      }
+}

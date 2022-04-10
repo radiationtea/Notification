@@ -1,4 +1,5 @@
-import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Query, UseGuards } from '@nestjs/common'
+import { ClientAuthGuard } from 'src/auth/client-auth.guard'
 import { ResponseBody } from 'src/interfaces/ResponseBody'
 import { CancelMessageDto } from './dto/CancelMessage.dto'
 import { GetMessageDto } from './dto/GetMessage.dto'
@@ -7,6 +8,7 @@ import { Message } from './messages.entity'
 import { MessagesService } from './messages.service'
 
 @Controller('messages')
+@UseGuards(ClientAuthGuard)
 export class MessagesController {
   private messagesService: MessagesService
 
