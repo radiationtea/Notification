@@ -8,6 +8,7 @@ import { AuthServerPermCheckRes } from './interfaces/authserver.dto'
 export class AuthService {
   private httpSerivce: HttpService
   private authServer: string
+  private serverToken: string
 
   constructor (httpService: HttpService, configService: ConfigService) {
     this.httpSerivce = httpService
@@ -24,5 +25,9 @@ export class AuthService {
       }).pipe(map((r) => r.data))
 
     return (await lastValueFrom(request)).data.hasPermission
+  }
+
+  public checkPermissionForServer (token: string) {
+    return token === `token ${this.serverToken}`
   }
 }
