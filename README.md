@@ -23,13 +23,6 @@ Content-Type: application/json
   "data": {
     "subject": "3C-Notification",
     "uptime": number, // in ms
-    "messages": {
-      "pending": number, // 전송 대기 중인 메시지 수
-      "processing": number, // 전송 중인 메시지 수 
-      "resolved": number, // 전송 된 메시지 수
-      "failed": number, // 전송 실패한 메시지 수
-      "last_at": number // in ms / 마지막으로 처리된 메시지의 타임스템프
-    },
     "timestamp": number // in ms
   }
 }
@@ -42,12 +35,12 @@ list all messages
 
 request:
 ```
-GET /messages?status=<pending/processing/resolved/failed/all>&type=<submitted/accepted/rejected>&per_pages=<1~100, default: 10>&page=<0~>
+GET /messages?type=<submitted/accepted/rejected/all>&per_pages=<1~100, default: 10>&page=<0~>
 Cookies: SESSION_TOKEN=<admin_token>
 
 ex)
 GET /messages?type=all&per_page=100
-GET /messages?type=pending&per_pages=10&page=2
+GET /messages?type=submitted&per_pages=10&page=2
 ```
 
 response:
@@ -61,7 +54,6 @@ Content-Type: application/json
     "messages": [
       {
         "id": string, // in UUID
-        "status": "pending/processing/resolved/failed",
         "type": "submitted/accepted/rejected",
         "requested_at": number, // in ms
         "resolved_at": number | null,
@@ -71,32 +63,6 @@ Content-Type: application/json
       },
       ...
     ]
-  }
-}
-```
-
----
-
----
-
-**DELETE** `/messages/<messageid>`\
-Undo message send request
-
-request:
-```
-DELETE /messages/f4dbe82a-7b26-41ac-864a-fb42e2aea082
-Cookies: SESSION_TOKEN=<admin_token>
-```
-
-response:
-```json
-200 OK
-Content-Type: application/json
-
-{
-  "success": true,
-  "data": {
-    "id": string
   }
 }
 ```
