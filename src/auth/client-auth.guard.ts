@@ -11,15 +11,17 @@ export class ClientAuthGuard implements CanActivate {
   }
 
   public canActivate (context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest()
-    return this.hasPermission(request)
+    const http = context.switchToHttp()
+    const req = http.getRequest()
+
+    return this.verify(req)
   }
 
-  private async hasPermission (request: Request): Promise<boolean> {
-    const sessionToken = request.cookies.SESSION_TOKEN
+  private async verify (req: Request) {
+    const sessionToken = req.cookies.SESSION_TOKEN
 
     if (!sessionToken) return false
 
-    return await this.authService.checkPermissionForUser(sessionToken, 'MANAGE_NOTIFICATION')
+    return !!await this.authService.verifyClientToken(sessionToken)
   }
 }

@@ -1,7 +1,8 @@
-import { Controller, Delete, Get, Param, Query, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ClientAuthGuard } from 'src/auth/client-auth.guard'
+import { ServerAuthGuard } from 'src/auth/server-auth.guard'
 import { ResponseBody } from 'src/interfaces/ResponseBody'
-import { CancelMessageDto } from './dto/CancelMessage.dto'
+import { CreateMessageDto } from './dto/CreateMessage.dto'
 import { GetMessageDto } from './dto/GetMessage.dto'
 import { QueryMessagesDto } from './dto/QueryMessages.dto'
 import { Message } from './messages.entity'
@@ -24,8 +25,7 @@ export class MessagesController {
       query.page,
       query.perPages,
       {
-        type: query.type !== 'all' ? query.type : undefined,
-        status: query.status !== 'all' ? query.status : undefined
+        type: query.type !== 'all' ? query.type : undefined
       }
     )
 
@@ -33,6 +33,22 @@ export class MessagesController {
       success: true,
       data: {
         messages
+      }
+    }
+  }
+
+  @Post()
+  @UseGuards(ServerAuthGuard)
+  async createMessage (
+    @Body() body: CreateMessageDto
+  ): Promise<ResponseBody<{id: number}>> {
+    const id = await this.messagesService.createMessage(body.type, body.subcategory, body.user)
+    // TODO Impl
+    //
+    return {
+      success: true,
+      data: {
+        id
       }
     }
   }
@@ -45,7 +61,7 @@ export class MessagesController {
 
     if (!message) {
       return {
-        success: true,
+        success: false,
         error: `message id ${params.id} not found`
       }
     }
@@ -54,20 +70,6 @@ export class MessagesController {
       success: true,
       data: {
         message
-      }
-    }
-  }
-
-  @Delete(':id')
-  async cancelMessage (
-    @Param() params: CancelMessageDto
-  ): Promise<ResponseBody<{id: string}>> {
-    await this.messagesService.cancelMessage(params.id)
-
-    return {
-      success: true,
-      data: {
-        id: params.id
       }
     }
   }

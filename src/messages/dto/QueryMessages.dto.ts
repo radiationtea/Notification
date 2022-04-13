@@ -1,12 +1,8 @@
-import { MessageStatus, MessageType } from '../messages.entity'
+import { MessageType } from '../messages.entity'
 import { IsIn, IsInt, IsOptional, Max, Min } from 'class-validator'
 import { Expose, Type } from 'class-transformer'
 
 export class QueryMessagesDto {
-  @IsOptional()
-  @IsIn(['pending', 'processing', 'resolved', 'failed', 'all'])
-  readonly status: MessageStatus | 'all'
-
   @IsOptional()
   @IsIn(['submitted', 'accepted', 'rejected', 'all'])
   readonly type: MessageType | 'all'

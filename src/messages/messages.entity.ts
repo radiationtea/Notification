@@ -1,31 +1,24 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-export type MessageStatus = 'pending' | 'processing' | 'resolved' | 'failed'
 export type MessageType = 'submitted' | 'accepted' | 'rejected'
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
+  @PrimaryGeneratedColumn({ name: 'notiid' })
+  readonly notiId: number
 
-  @Column({ default: 'pending' })
-  status: MessageStatus
-
-  @Column()
-  type: MessageType
+  @Column({ name: 'userid' })
+  readonly userId: string
 
   @Column()
-  content: string
+  readonly type: MessageType
+
+  @Column({ name: 'requestedat' })
+  readonly requestedAt: Date
+
+  @Column({ name: 'resolvedat' })
+  readonly resolvedAt: Date
 
   @Column()
-  phoneNumber: string
-
-  @Column()
-  requestedAt: Date
-
-  @Column()
-  resolvedAt?: Date
-
-  @Column()
-  errors?: string
+  readonly errors: string
 }

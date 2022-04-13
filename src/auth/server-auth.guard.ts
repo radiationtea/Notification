@@ -12,14 +12,14 @@ export class ServerAuthGuard implements CanActivate {
 
   public canActivate (context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest()
-    return this.hasPermission(request)
+    return this.verify(request)
   }
 
-  private hasPermission (request: Request): boolean {
+  private verify (request: Request): boolean {
     const serverToken = request.headers.authorization
 
     if (!serverToken) return false
 
-    return this.authService.checkPermissionForServer(serverToken)
+    return this.authService.verifyServerToken(serverToken)
   }
 }

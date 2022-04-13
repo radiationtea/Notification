@@ -1,6 +1,9 @@
-import { IsUUID } from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsInt, Min } from 'class-validator'
 
 export class GetMessageDto {
-  @IsUUID()
-  readonly id: string
+  @IsInt()
+  @Min(0)
+  @Type(() => Number)
+  readonly id: number
 }
