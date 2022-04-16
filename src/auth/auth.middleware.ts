@@ -6,6 +6,10 @@ import { AuthService } from './auth.service'
 export class AuthMiddleware implements NestMiddleware {
   private authService: AuthService
 
+  constructor (authService: AuthService) {
+    this.authService = authService
+  }
+
   use (req: Request, res: Response, next: NextFunction) {
     const sessionToken = req.cookies.SESSION_TOKEN
     if (!sessionToken) return next()
