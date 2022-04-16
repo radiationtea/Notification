@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Raw, Repository } from 'typeorm'
-import { Permission, Roles, Users } from './permissions.entities'
+import { Permissions, Roles, Users } from './permissions.entities'
 
 @Injectable()
 export class PermissionsService {
-  private permissions: Repository<Permission>
+  private permissions: Repository<Permissions>
   private roles: Repository<Roles>
   private users: Repository<Users>
 
   constructor (
-   @InjectRepository(Permission) permissions: Repository<Permission>,
+   @InjectRepository(Permissions) permissions: Repository<Permissions>,
    @InjectRepository(Roles) roles: Repository<Roles>,
    @InjectRepository(Users) users: Repository<Users>
   ) {

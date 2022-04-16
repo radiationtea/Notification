@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 export type MessageType = 'submitted' | 'accepted' | 'rejected'
 
 @Entity()
-export class Message {
+export class Messages {
   @PrimaryGeneratedColumn({ name: 'notiid' })
   readonly notiId: number
 

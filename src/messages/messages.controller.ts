@@ -6,7 +6,7 @@ import { PermissionsGuard } from 'src/permissions/permissions.guard'
 import { CreateMessageDto } from './dto/CreateMessage.dto'
 import { GetMessageDto } from './dto/GetMessage.dto'
 import { QueryMessagesDto } from './dto/QueryMessages.dto'
-import { Message } from './messages.entity'
+import { Messages } from './messages.entity'
 import { MessagesService } from './messages.service'
 
 @Controller('messages')
@@ -22,7 +22,7 @@ export class MessagesController {
   @UseGuards(PermissionsGuard)
   async queryMessages (
     @Query() query: QueryMessagesDto
-  ): Promise<ResponseBody<{ messages: Message[] }>> {
+  ): Promise<ResponseBody<{ messages: Messages[] }>> {
     const messages = await this.messagesService.queryMessages(
       query.page,
       query.perPages,
@@ -60,7 +60,7 @@ export class MessagesController {
   @UseGuards(PermissionsGuard)
   async getMessage (
     @Param() params: GetMessageDto
-  ): Promise<ResponseBody<{message: Message}>> {
+  ): Promise<ResponseBody<{message: Messages}>> {
     const message = await this.messagesService.getMessage(params.id)
 
     if (!message) {
