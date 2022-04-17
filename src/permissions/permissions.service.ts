@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { UsersService } from 'src/users/users.service'
 import { Raw, Repository } from 'typeorm'
-import { Permissions, Roles, Users } from './permissions.entities'
+import { Permissions, Roles } from './permissions.entities'
 
 @Injectable()
 export class PermissionsService {
   private permissions: Repository<Permissions>
   private roles: Repository<Roles>
-  private users: Repository<Users>
+  private usersService: UsersService
 
   constructor (
    @InjectRepository(Permissions) permissions: Repository<Permissions>,
    @InjectRepository(Roles) roles: Repository<Roles>,
-   @InjectRepository(Users) users: Repository<Users>
+     usersService: UsersService
   ) {
+    this.usersService = usersService
     this.permissions = permissions
     this.roles = roles
-    this.users = users
   }
 
   public async hasPermission (userId: string, label: string) {
@@ -37,7 +38,7 @@ export class PermissionsService {
   }
 
   private async listRolesByUserId (userId: string) {
-    const userData = await this.users.findOne(userId)
+    const userData = await this.usersService.getUser(userId)
     if (!userData) return null
 
     return this.roles.find({

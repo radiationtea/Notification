@@ -20,12 +20,3 @@ export class Roles {
   @Column()
   readonly label: string
 }
-
-@Entity()
-export class Users {
-  @PrimaryColumn({ name: 'userid' })
-  readonly userId: string
-
-  @Column()
-  readonly roles: number
-}
