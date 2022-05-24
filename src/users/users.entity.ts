@@ -7,4 +7,7 @@ export class Users {
 
   @Column({ name: 'phone' })
   readonly phoneNumber: string
+
+  @Column()
+  readonly name: string
 }

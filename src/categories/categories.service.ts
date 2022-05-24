@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Subcategories } from './categories.entity'
+import { Subcategories } from './categories.entities'
 
 @Injectable()
 export class CategoriesService {
@@ -15,8 +15,6 @@ export class CategoriesService {
   }
 
   public getSubcategory (subId: number) {
-    return this.subcategories.findOne(subId, {
-      relations: ['parent', 'parent.manageUser']
-    })
+    return this.subcategories.findOne(subId)
   }
 }

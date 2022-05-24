@@ -12,7 +12,7 @@ export class Categories {
   @Column()
   readonly manager: string
 
-  @ManyToOne(() => Users)
+  @ManyToOne(() => Users, { eager: true })
   @JoinColumn({ referencedColumnName: 'userId', name: 'manager' })
   readonly manageUser: Users
 }
@@ -28,7 +28,7 @@ export class Subcategories {
   @Column()
   readonly label: string
 
-  @OneToOne(() => Categories)
+  @OneToOne(() => Categories, { eager: true })
   @JoinColumn({ referencedColumnName: 'categoryId', name: 'categoryid' })
   readonly parent: Categories
 }

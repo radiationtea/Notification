@@ -5,15 +5,15 @@ export type MessageType = 'submitted' | 'accepted' | 'rejected'
 @Entity()
 export class Messages {
   @PrimaryGeneratedColumn({ name: 'msgid' })
-  readonly notiId: number
+  readonly msgId: number
 
   @Column()
   readonly type: MessageType
 
-  @Column({ name: 'requestedat' })
+  @Column({ name: 'requestedat', type: 'timestamp' })
   readonly requestedAt: Date
 
-  @Column({ name: 'resolvedat' })
+  @Column({ name: 'resolvedat', type: 'timestamp' })
   readonly resolvedAt: Date
 
   @Column()
