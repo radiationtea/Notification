@@ -8,6 +8,7 @@ import { AuthModule } from 'src/auth/auth.module'
 import { PermissionsModule } from 'src/permissions/permissions.module'
 import { CategoriesModule } from 'src/categories/categories.module'
 import { UsersModule } from 'src/users/users.module'
+import { AligoModule } from 'src/aligo/aligo.module'
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { UsersModule } from 'src/users/users.module'
     CategoriesModule,
     PermissionsModule,
     UsersModule,
-    CategoriesModule
+    CategoriesModule,
+    AligoModule
   ],
   controllers: [MessagesController],
   providers: [MessagesService]
