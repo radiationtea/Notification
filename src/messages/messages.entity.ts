@@ -4,11 +4,8 @@ export type MessageType = 'submitted' | 'accepted' | 'rejected'
 
 @Entity()
 export class Messages {
-  @PrimaryGeneratedColumn({ name: 'notiid' })
+  @PrimaryGeneratedColumn({ name: 'msgid' })
   readonly notiId: number
-
-  @Column({ name: 'userid' })
-  readonly userId: string
 
   @Column()
   readonly type: MessageType
@@ -21,4 +18,10 @@ export class Messages {
 
   @Column()
   readonly errors: string
+
+  @Column()
+  readonly content: string
+
+  @Column()
+  readonly phone: string
 }

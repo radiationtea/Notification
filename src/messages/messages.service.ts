@@ -43,7 +43,7 @@ export class MessagesService {
 
     const data = await this.messagesRepository.insert({
       type,
-      userId: user.userId,
+      phone: user.phoneNumber,
       requestedAt: Date.now()
     })
 

@@ -1,50 +1,61 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UsersService } from 'src/users/users.service'
-import { Raw, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { Permissions, Roles } from './permissions.entities'
 
 @Injectable()
 export class PermissionsService {
-  private permissions: Repository<Permissions>
   private roles: Repository<Roles>
+  private permissions: Repository<Permissions>
   private usersService: UsersService
 
   constructor (
-   @InjectRepository(Permissions) permissions: Repository<Permissions>,
-   @InjectRepository(Roles) roles: Repository<Roles>,
-     usersService: UsersService
+    @InjectRepository(Roles)
+      roles: Repository<Roles>,
+    @InjectRepository(Permissions)
+      permissions: Repository<Permissions>,
+      usersService: UsersService
   ) {
-    this.usersService = usersService
-    this.permissions = permissions
     this.roles = roles
+    this.permissions = permissions
+    this.usersService = usersService
   }
 
   public async hasPermission (userId: string, label: string) {
-    const roles = await this.listRolesByUserId(userId)
-    if (!roles) return null
+    const user = await this.usersService.getUser(userId)
+    if (!user) return false
 
-    const perm = await this.getPermByLabel(label)
-    if (!perm) return null
+    const roles = await this.listRoles(userId)
+    if (!roles) return false
 
-    const found = roles.find((r) => r.perms & (1 << perm.permId))
-    return !!found
+    const perms = await this.listPermissions(roles)
+    return perms.has(label)
   }
 
-  private getPermByLabel (label: string) {
-    return this.permissions.findOne({
-      where: { label }
-    })
-  }
-
-  private async listRolesByUserId (userId: string) {
-    const userData = await this.usersService.getUser(userId)
-    if (!userData) return null
-
+  private listRoles (userId: string) {
     return this.roles.find({
       where: {
-        roleId: Raw((id) => `${userData.roles} & (1 << ${id})`)
+        userId
       }
     })
+  }
+
+  private async listPermissions (roles: Roles[]) {
+    const permissions = new Set<string>()
+
+    for (const role of roles) {
+      const perms = await this.permissions.find({
+        where: {
+          roleId: role.roleId
+        }
+      })
+
+      for (const perm of perms) {
+        permissions.add(perm.label)
+      }
+    }
+
+    return permissions
   }
 }

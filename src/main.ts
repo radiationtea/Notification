@@ -14,7 +14,10 @@ async function bootstrap () {
     whitelist: true
   }))
 
-  await app.listen(parseInt(process.env.SERVER_PORT) || 8080)
+  const port = parseInt(process.env.SERVER_PORT) || 8080
+  console.log(`Server is now online on http://localhost:${port}`)
+
+  await app.listen(port)
 }
 
 bootstrap()

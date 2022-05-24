@@ -8,7 +8,8 @@ import { MessagesModule } from './messages/messages.module'
 @Module({
   imports: [
     ConfigModule.forRoot({
-      cache: true
+      cache: true,
+      envFilePath: ['.env']
     }),
     TypeOrmModule.forRoot(),
     MessagesModule,

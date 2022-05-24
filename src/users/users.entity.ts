@@ -5,9 +5,6 @@ export class Users {
   @PrimaryColumn({ name: 'userid' })
   readonly userId: string
 
-  @Column()
-  readonly roles: number
-
   @Column({ name: 'phone' })
   readonly phoneNumber: string
 }
