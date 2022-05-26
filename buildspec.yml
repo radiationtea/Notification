@@ -11,10 +11,8 @@ phases:
       - IMAGE_TAG=${COMMIT_HASH:=latest}
       - ENVIROMENT_PARMS=$(aws ssm get-parameter --name "/3ccert/notification/enviroment" --output json --with-decryption)
       - ORMCONFIG_PARMS=$(aws ssm get-parameter --name "/3ccert/notification/ormconfig" --output json --with-decryption)
-      - echo $ENVIROMENT_PARMS | jq ".Parameter.Value" | tr -d '"' > .env
-      - echo $ORMCONFIG_PARMS | jq ".Parameter.Value" | tr -d '"' > ormconfig.json
-      - echo $ENVIROMENT_PARMS
-      - echo $ORMCONFIG_PARMS
+      - echo $ENVIROMENT_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | tr -d '"' > .env
+      - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | tr -d '"' > ormconfig.json
   build:
     commands:
       - echo Build started on `date`
