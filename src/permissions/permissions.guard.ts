@@ -15,7 +15,7 @@ export class PermissionsGuard implements CanActivate {
     this.reflector = reflector
   }
 
-  public canActivate (context: ExecutionContext) {
+  public async canActivate (context: ExecutionContext) {
     const userId =
       context.switchToHttp().getResponse().locals.userId
     const requiredPermissions =
@@ -25,7 +25,7 @@ export class PermissionsGuard implements CanActivate {
 
     for (const permission of requiredPermissions) {
       const result =
-        this.permissionsService.hasPermission(userId, permission)
+        await this.permissionsService.hasPermission(userId, permission)
 
       if (!result) return false
     }
