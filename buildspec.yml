@@ -13,6 +13,7 @@ phases:
       - ORMCONFIG_PARMS=$(aws ssm get-parameter --name "/3ccert/notification/ormconfig" --output json --with-decryption)
       - echo $ENVIROMENT_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | sed ':a;N;$!ba;s/\\n/\n/g' > .env
       - echo $ORMCONFIG_PARMS | sed ':a;N;$!ba;s/\n/\\n/g' | jq ".Parameter.Value" | jq '.|fromjson' > ormconfig.json
+      - cat .env
   build:
     commands:
       - echo Build started on `date`
