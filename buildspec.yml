@@ -9,8 +9,12 @@ phases:
       - REPOSITORY_URI=109743122068.dkr.ecr.ap-northeast-2.amazonaws.com/3ccert-notification
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo $(aws ssm get-parameter --name "/3ccert/notification/enviroment" --output json --with-decryption | jq ".Parameter.Value" | tr -d '"') > .env
-      - echo $(aws ssm get-parameter --name "/3ccert/notification/ormconfig" --output json --with-decryption | jq ".Parameter.Value" | tr -d '"') > ormconfig.json
+      - ENVIROMENT_PARMS=$(aws ssm get-parameter --name "/3ccert/notification/enviroment" --output json --with-decryption)
+      - ORMCONFIG_PARMS=$(aws ssm get-parameter --name "/3ccert/notification/ormconfig" --output json --with-decryption)
+      - echo $ENVIROMENT_PARMS | jq ".Parameter.Value" | tr -d '"' > .env
+      - echo $ORMCONFIG_PARMS | jq ".Parameter.Value" | tr -d '"' > ormconfig.json
+      - cat .env
+      - cat ormconfig.json
   build:
     commands:
       - echo Build started on `date`
