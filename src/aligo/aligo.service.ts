@@ -17,7 +17,7 @@ export class AligoService {
   public sendMessage (content: string, phoneNumber: string) {
     return this.client.sendMessages({
       msg: content,
-      msg_type: 'SMS',
+      msg_type: 'LMS',
       receiver: phoneNumber
     })
   }
