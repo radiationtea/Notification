@@ -21,11 +21,12 @@ export class MessagesController {
   @Require('MANAGE_NOTIFICATIONS')
   @UseGuards(PermissionsGuard)
   async queryMessages (
+    @Query('per_pages') perPages: number,
     @Query() query: QueryMessagesDto
   ): Promise<ResponseBody<{ messages: Messages[] }>> {
     const messages = await this.messagesService.queryMessages(
       query.page,
-      query.perPages,
+      perPages,
       {
         type: query.type !== 'all' ? query.type : undefined
       }
@@ -44,13 +45,10 @@ export class MessagesController {
   async createMessage (
     @Body() body: CreateMessageDto
   ): Promise<ResponseBody<{id: number}>> {
-    const id = await this.messagesService.createMessage(body.type, body.subcategory, body.user)
-    // TODO Impl
-    //
     return {
       success: true,
       data: {
-        id
+        id: await this.messagesService.createMessage(body.type, body.subcategory, body.user)
       }
     }
   }

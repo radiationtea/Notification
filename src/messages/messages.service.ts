@@ -33,7 +33,7 @@ export class MessagesService {
   }): Promise<Messages[]> {
     return this.messagesRepository.find({
       skip: page * perPage,
-      take: page,
+      take: perPage,
       where: filter.type ? filter : undefined
     })
   }
