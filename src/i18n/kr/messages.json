@@ -1,5 +1,0 @@
-{
-  "SUBMITTED": "[3C인증제]\n{student} 학생이 \"{category} - {subcategory}\" 승인요청을 업로드 했습니다.\n승인 처리: https://3c.gbsw.hs.kr",
-  "ACCPTED": "[3C인증제]\n{student} 학생이 업로드한 \"{category} - {subcategory}\" 승인요청이 승인되었습니다.\n점수 확인: https://3c.gbsw.hs.kr",
-  "REJECTED": "[3C인증제]\n${student} 학생이 업로드한 \"{category} - {subcategory}\" 승인요청이 거부되었습니다.\n거부 사유 확인: https://3c.gbsw.hs.kr"
-}

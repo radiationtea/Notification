@@ -75,5 +75,16 @@ export class MessagesService {
   }
 
   private getMessageContent (type: MessageType, student: Users, subcate: Subcategories) {
+    if (type === 'submitted') {
+      return `[3C인증제]\n${student.name} 학생이 "${subcate.parent.label} - ${subcate.label}" 승인요청을 업로드 했습니다.\n승인 처리: https://3c.gbsw.hs.kr`
+    }
+
+    if (type === 'accepted') {
+      return `[3C인증제]\n${student.name} 학생이 업로드한 "${subcate.parent.label} - ${subcate.label}" 승인요청이 승인되었습니다.\n점수 확인: https://3c.gbsw.hs.kr`
+    }
+
+    if (type === 'rejected') {
+      return `[3C인증제]\n${student.name} 학생이 업로드한 "${subcate.parent.label} - ${subcate.label}" 승인요청이 거부되었습니다.\n거부 사유 확인: https://3c.gbsw.hs.kr`
+    }
   }
 }
